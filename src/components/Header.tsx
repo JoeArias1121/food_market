@@ -6,12 +6,16 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 export default function Header() {
   const user = null; // Replace with actual user authentication logic
   return (
-    <header className="flex justify-between">
+    <header className="flex justify-between bg-slate-900 p-4">
       <div className="flex items-center">
-        <h1>Food Market</h1>
+        <h1 className="text-3xl font-bold">Food Market</h1>
       </div>
       <div className="flex items-center gap-4">
-        {user! ? (
+        {user ? (
+          <Button asChild>
+            <Link href="/signout">Sign out</Link>
+          </Button>
+        ) : (
           <>
             <Button asChild>
               <Link href="/login">Login</Link>
@@ -20,10 +24,6 @@ export default function Header() {
               <Link href="/signup">Sign Up</Link>
             </Button>
           </>
-        ) : (
-          <Button asChild>
-            <Link href="/signout">Sign out</Link>
-          </Button>
         )}
         <ThemeToggle />
       </div>
