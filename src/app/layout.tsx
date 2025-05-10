@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "@/styles/globals.css";
 import { ThemeProvider } from "@/app/providers/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
+import Header from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "Food Market",
@@ -22,6 +23,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Header />
           <div className="flex min-h-screen w-full flex-col">
             <main className="flex flex-1 flex-col">{children}</main>
           </div>
