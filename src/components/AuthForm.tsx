@@ -12,13 +12,23 @@ type Props = {
   type: "login" | "signup";
 };
 
-export default function AuthForm({ type }: Props) {
+export default async function AuthForm({ type }: Props) {
   const isLoginForm = type === "login";
 
   const [isPending, startTransition] = useTransition();
 
   const handleSubmit = async (formData: FormData) => {
     console.log("Handle submit called");
+    startTransition(async () => { 
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
+
+      let errorMessage;
+      let title;
+      let description;
+      if (isLoginForm) {
+        errorMessage = (await loginAction(email, password).errorMessage)
+    }
   };
   console.log("AuthForm rendered");
   return (

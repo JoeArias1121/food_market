@@ -25,3 +25,17 @@ export async function createClient() {
     },
   );
 }
+// since i will use this all the time, this will be the best place to create a function for it
+export async function getUser() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    console.error("User not authenticated");
+    return null;
+  }
+
+  return user;
+}
