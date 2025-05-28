@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
-export const logout = async () => {
+export const logoutAction = async () => {
   try {
     const supabase = await createClient();
     const { error } = await supabase.auth.signOut(); // signing out user on supabase auth
@@ -18,12 +18,12 @@ export const logout = async () => {
     revalidatePath("/");
     redirect("/");
   } catch (error) {
-    console.error("Error signing out:", error);
+    return handleError(error);
     // Show error message to user through toast
   }
 };
 
-export const login = async (formData: FormData) => {
+export const loginAction = async (formData: FormData) => {
   try {
     const email = (formData.get("email") as string).trim();
     const password = (formData.get("password") as string).trim();
@@ -50,11 +50,11 @@ export const login = async (formData: FormData) => {
     revalidatePath("/");
     redirect("/"); // Redirect to the home page or any other page after login
   } catch (error) {
-    console.error("Error logging in:", error);
+    return handleError(error);
   }
 };
 
-export const signup = async (formData: FormData) => {
+export const signupAction = async (formData: FormData) => {
   try {
     const email = (formData.get("email") as string).trim();
     const password = (formData.get("password") as string).trim();
@@ -81,6 +81,14 @@ export const signup = async (formData: FormData) => {
     revalidatePath("/");
     redirect("/"); // Redirect to the home page or any other page after signup
   } catch (error) {
-    console.error("Error signing up:", error);
+    return handleError(error);
   }
 };
+
+export const handleError = (error: unknown) => { 
+  console.error("An error occurred:", error);
+  if (error instanceof Error) { 
+    return { errorMessage: error.message };
+  }
+  return { errorMessage: "An error occurred" };
+}

@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useTransition } from "react";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner"
+import { loginAction, signupAction } from "@/app/actions/auth";
 import Link from "next/link";
 
 type Props = {
@@ -19,7 +21,7 @@ export default async function AuthForm({ type }: Props) {
 
   const handleSubmit = async (formData: FormData) => {
     console.log("Handle submit called");
-    startTransition(async () => { 
+    startTransition(async () => {
       const email = formData.get("email") as string;
       const password = formData.get("password") as string;
 
@@ -27,8 +29,25 @@ export default async function AuthForm({ type }: Props) {
       let title;
       let description;
       if (isLoginForm) {
-        errorMessage = (await loginAction(email, password).errorMessage)
-    }
+        errorMessage = (await loginAction(email, password)).errorMessage;
+        title = "Logged In";
+        description = "You have successfully logged in";
+      } else {
+        errorMessage = (await signupAction(email, password)).errorMessage;
+        title = "Signed Up";
+        description = "Check your email for confirmation link";
+      }
+
+      if (!errorMessage) {
+        toast.success(title, {
+          description,
+        })
+      } else {
+        toast.error(`Error with ${isLoginForm ? "login" : "signup"}`, {
+          description: errorMessage
+        });
+      }
+    });
   };
   console.log("AuthForm rendered");
   return (
