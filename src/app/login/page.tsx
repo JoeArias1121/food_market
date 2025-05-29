@@ -1,12 +1,9 @@
 import React from "react";
 import AuthForm from "@/components/AuthForm";
-import { login } from "@/app/actions/auth";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function page() {
-  const handleSubmit = async (formData: FormData) => {
-    const res = await login(formData);
-  };
+  
 
   return (
     <div className="mt-20 flex flex-1 flex-col items-center">

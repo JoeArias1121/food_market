@@ -23,10 +23,8 @@ export const logoutAction = async () => {
   }
 };
 
-export const loginAction = async (formData: FormData) => {
+export const loginAction = async (email: string, password: string) => {
   try {
-    const email = (formData.get("email") as string).trim();
-    const password = (formData.get("password") as string).trim();
     if (!email || !password) {
       throw new Error("Email and/or password missing, both are required");
     }
@@ -54,10 +52,8 @@ export const loginAction = async (formData: FormData) => {
   }
 };
 
-export const signupAction = async (formData: FormData) => {
+export const signupAction = async (email: string, password: string) => {
   try {
-    const email = (formData.get("email") as string).trim();
-    const password = (formData.get("password") as string).trim();
     if (!email || !password) {
       throw new Error("Email and password are required");
     }
