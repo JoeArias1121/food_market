@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import axios from "axios";
 
 export const logoutAction = async () => {
   try {
@@ -45,6 +46,19 @@ export const loginAction = async (email: string, password: string) => {
       path: "/",
       maxAge: 60 * 60 * 24 * 7, // 1 week
     }); // Set the user ID in cookies
+
+    const response = await axios.get("/api/user", {
+      params: {
+        email,
+        password,
+      },
+    });
+
+    const user = response.data;
+    if (!user) {
+      throw new Error("User not found");
+    }
+
     revalidatePath("/");
     redirect("/"); // Redirect to the home page or any other page after login
   } catch (error) {
@@ -74,6 +88,20 @@ export const signupAction = async (email: string, password: string) => {
       path: "/",
       maxAge: 60 * 60 * 24 * 7, // 1 week
     }); // Set the user ID in cookies
+
+    const response = await axios.post('/api/user', {
+      params: {
+        email,
+        password,
+      }
+    })
+
+    const user = response.data;
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
     revalidatePath("/");
     redirect("/"); // Redirect to the home page or any other page after signup
   } catch (error) {
