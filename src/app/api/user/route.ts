@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const email = searchParams.get("email");
     const userId = request.headers.get("user_id");
     if (!userId) {
       return NextResponse.json({ error: "User ID is required" }, { status: 400 });

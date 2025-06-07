@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import { CardContent, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -14,7 +13,7 @@ type Props = {
   type: "login" | "signup";
 };
 
-export default async function AuthForm({ type }: Props) {
+export default function AuthForm({ type }: Props) {
   const isLoginForm = type === "login";
 
   const [isPending, startTransition] = useTransition();

@@ -6,7 +6,7 @@ import LogoutButton from "@/components/LogoutButton";
 import { Toaster } from "@/components/ui/sonner";
 
 export default function Header() {
-  const user = true; // Replace with actual user authentication logic
+  const user = false; // Replace with actual user authentication logic
   return (
     <header className="flex justify-between bg-slate-900 p-4">
       <div className="flex items-center">

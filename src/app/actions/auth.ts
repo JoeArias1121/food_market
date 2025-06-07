@@ -109,7 +109,7 @@ export const signupAction = async (email: string, password: string) => {
   }
 };
 
-export const handleError = (error: unknown) => { 
+export const handleError = async (error: unknown) => { 
   console.error("An error occurred:", error);
   if (error instanceof Error) { 
     return { errorMessage: error.message };
