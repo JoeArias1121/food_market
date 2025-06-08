@@ -1,34 +1,18 @@
-import React from 'react'
+"use client";
+import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
 
 export default function GoogleMap() {
-  let map;
-  let center = { lat: -34.397, lng: 150.644 };
-
-  async function initMap() {
-    await google.maps.importLibrary("maps");
-    await google.maps.importLibrary("marker");
-
-    map = new google.maps.Map(document.getElementById("map"), {
-      center,
-      zoom: 8,
-      mapId: "DEMO_MAP_ID",
-    });
-
-    addMarker();
-  }
-
-  async function addMarker() {
-    const marker = new google.maps.marker.AdvancedMarkerElement({
-      map,
-      position: center,
-    });
-  }
-
-  initMap();
-
-
-
+  const position = { lat: 61.2176, lng: -149.8997 };
   return (
-    <div>GoogleMap</div>
-  )
+    <APIProvider
+      className="h-full"
+      apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
+    >
+      <div className="flex h-80">
+        <Map className="h-full w-full" center={position} zoom={10} mapId={"f4c0b1d3a2b6c5e7"}>
+          <AdvancedMarker position={position} />
+        </Map>
+      </div>
+    </APIProvider>
+  );
 }
