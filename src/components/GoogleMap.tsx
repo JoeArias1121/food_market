@@ -2,8 +2,12 @@
 import { useEffect, useState } from "react";
 import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
 
-export default function GoogleMap() {
-  const [location, setLocation] = useState<{lat: number, lng: number} | null>(null)
+type props = {
+  search: string
+}
+
+export default function GoogleMap({search}: props) {
+  const [location, setLocation] = useState<{ lat: number, lng: number } | null>(null)
   
   useEffect(() => {
     // Get the current location
@@ -31,7 +35,7 @@ export default function GoogleMap() {
       apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
     >
       <div className="flex h-80">
-        <Map className="h-full w-full" center={location} zoom={10} mapId={process.env.NEXT_PUBLIC_MAP_ID as string}>
+        <Map className="h-full w-full" defaultCenter={location} defaultZoom={10} mapId={process.env.NEXT_PUBLIC_MAP_ID as string}>
           <AdvancedMarker position={location} />
         </Map>
       </div>
