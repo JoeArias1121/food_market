@@ -2,13 +2,14 @@
 import { useEffect, useState } from "react";
 import { AdvancedMarker, APIProvider, Map, useMap } from "@vis.gl/react-google-maps";
 
-type props = {
+type Props = {
   search: string
   mapReady: boolean
   setMapReady: (ready: boolean) => void
+  searchOrigin?: { lat: number, lng: number } | null
 }
 
-export default function GoogleMap({search, setMapReady, mapReady}: props) {
+export default function GoogleMap({search, setMapReady, mapReady, searchOrigin}: Props) {
   const [location, setLocation] = useState<{ lat: number, lng: number } | null>(null)
 
   const map = useMap();
@@ -18,16 +19,28 @@ export default function GoogleMap({search, setMapReady, mapReady}: props) {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         setLocation({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
+          lat: searchOrigin ? searchOrigin.lat : position.coords.latitude,
+          lng: searchOrigin ? searchOrigin.lng : position.coords.longitude,
         });
+        console.log("📍 Current Location: ", location)
       }, (error) => {
         console.error("Error getting location:", error);
       });
     } else {
       console.error("Geolocation is not supported by this browser.");
     }
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    if (searchOrigin) {
+      setLocation({
+        lat: searchOrigin.lat,
+        lng: searchOrigin.lng,
+      });
+      map?.panTo({ lat: searchOrigin.lat, lng: searchOrigin.lng });
+      console.log("📍 Panning to Location: ", searchOrigin);
+    }
+  }, [searchOrigin, map, mapReady])
 
   // This effect is to handle the map readiness
   useEffect(() => {

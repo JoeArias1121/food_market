@@ -1,4 +1,4 @@
-import usePlacesAutocomplete from "use-places-autocomplete";
+import usePlacesAutocomplete, {getGeocode, getLatLng} from "use-places-autocomplete";
 import {
   Combobox,
   ComboboxInput,
@@ -9,7 +9,11 @@ import {
 
 import "@reach/combobox/styles.css";
 
-const PlacesAutocomplete = () => {
+type Props = {
+  setSearchOrigin: (coords: { lat: number; lng: number }) => void;
+}
+
+export default function PlacesAutocomplete({ setSearchOrigin }: Props) {
   const {
     ready,
     value,
@@ -26,8 +30,16 @@ const PlacesAutocomplete = () => {
     setValue(e.target.value);
   };
 
-  const handleSelect = (val: any) => {
-    setValue(val, false);
+  const handleSelect = async (address: any) => {
+    setValue(address, false);
+
+    getGeocode({ address: address }).then((results) => {
+      const { lat, lng } = getLatLng(results[0]);
+      setSearchOrigin({ lat, lng });
+      console.log("📍 Coordinates: ", { lat, lng });
+    }).catch((error) => {
+      console.error("😱 Error: ", error);
+    });
   };
 
   return (
@@ -53,4 +65,3 @@ const PlacesAutocomplete = () => {
     </Combobox>
   );
 };
-export default PlacesAutocomplete;

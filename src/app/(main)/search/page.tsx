@@ -14,6 +14,7 @@ export default function Search() {
   // <Slider value={distance} />
   const [search, setSearch] = useState("");
   const [mapReady, setMapReady] = useState(false);
+  const [searchOrigin, setSearchOrigin] = useState<{ lat: number, lng: number } | null>(null);
   return (
     <>
       <h1>Search</h1>
@@ -22,10 +23,10 @@ export default function Search() {
         libraries={["places"]}
       >
         <h1>{process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}</h1>
-        { mapReady && <PlacesAutocomplete />}
+        { mapReady && <PlacesAutocomplete setSearchOrigin={setSearchOrigin}/>}
         <div className="flex w-1/4 flex-col">
           <SearchInput search={search} setSearch={setSearch} />
-          <GoogleMap mapReady={ mapReady } setMapReady={ setMapReady } search={search} />
+          <GoogleMap mapReady={ mapReady } setMapReady={ setMapReady } search={search} searchOrigin={searchOrigin}/>
         </div>
       </APIProvider>
     </>
