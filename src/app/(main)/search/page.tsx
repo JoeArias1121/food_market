@@ -7,11 +7,12 @@ import { Slider } from "@/components/ui/slider";
 import PlacesAutocomplete from "@/components/PlacesAutoComplete";
 import {
   APIProvider,
+  useMapsLibrary
 } from "@vis.gl/react-google-maps";
 
 export default function Search() {
-  //const [distance, setDistance] = useState([0]);
-  // <Slider value={distance} />
+  //const [range, setRange] = useState([0]);
+  // <Slider value={range} />
   const [search, setSearch] = useState("");
   const [mapReady, setMapReady] = useState(false);
   const [searchOrigin, setSearchOrigin] = useState<{ lat: number, lng: number } | null>(null);
