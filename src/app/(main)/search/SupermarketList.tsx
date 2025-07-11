@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/button'
 type Props = {
   searchOrigin: { lat: number; lng: number } | null
   range: number
+  superMarketMarkers: any[]
+  setSuperMarketMarkers: (markers: any[]) => void
 }
 
-export default async function SupermarketList({ searchOrigin, range }: Props) {
+export default async function SupermarketList({ searchOrigin, range, superMarketMarkers, setSuperMarketMarkers }: Props) {
   
   const handleSearch = async () => { 
     // Implement search logic here
@@ -36,8 +38,9 @@ export default async function SupermarketList({ searchOrigin, range }: Props) {
       };
       const { places } = await Place.searchNearby(request);
 
-      if (places.length) {
-        console.log(places);
+      if (!places.length) {
+        throw new Error("No supermarkets found in the specified area.");
+      }
 
         const { LatLngBounds } = (await google.maps.importLibrary(
           "core",
@@ -47,20 +50,20 @@ export default async function SupermarketList({ searchOrigin, range }: Props) {
         // Loop through and get all the results.
         // TODO: Migrate to new map api to show map
         places.forEach((place) => {
-          const markerView = new AdvancedMarkerElement({
-            map,
-            position: place.location,
-            title: place.displayName,
-          });
+          setSuperMarketMarkers([
+            ...superMarketMarkers,
+            {
+              displayName: place.displayName,
+              position: place.location,
+              title: place.displayName,
+            }
+          ]);
 
           bounds.extend(place.location as google.maps.LatLng);
           console.log(place);
         });
 
-        map.fitBounds(bounds);
-      } else {
-        console.log("No results");
-      }
+        //map.fitBounds(bounds);
     } catch (error) {
     console.error("Error searching for supermarkets:", error);
   }

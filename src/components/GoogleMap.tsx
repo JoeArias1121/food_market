@@ -7,12 +7,14 @@ type Props = {
   mapReady: boolean
   setMapReady: (ready: boolean) => void
   searchOrigin?: { lat: number, lng: number } | null
+  superMarketMarkers: any[]
 }
 
-export default function GoogleMap({search, setMapReady, mapReady, searchOrigin}: Props) {
+export default function GoogleMap({search, setMapReady, mapReady, searchOrigin, superMarketMarkers}: Props) {
   const [location, setLocation] = useState<{ lat: number, lng: number } | null>(null)
 
   const map = useMap();
+  const markers: any[] = []
   
   useEffect(() => {
     // Get the current location
@@ -49,6 +51,13 @@ export default function GoogleMap({search, setMapReady, mapReady, searchOrigin}:
       setMapReady(true);
     }
   }, [map])
+
+  useEffect(() => {
+    superMarketMarkers.forEach((marker) => {
+      console.log("Supermarket Marker:", marker);
+      markers.push(<AdvancedMarker position={marker.position} title={ marker.title} />);
+    });
+  }, [superMarketMarkers]);
   // TODO: use toasts and/or loading state to if error or loading
   // this is temporary
   if (!location) {
@@ -60,6 +69,7 @@ export default function GoogleMap({search, setMapReady, mapReady, searchOrigin}:
       <div className="flex h-80">
         <Map className="h-full w-full" defaultCenter={location} defaultZoom={10} mapId={process.env.NEXT_PUBLIC_MAP_ID as string}>
           <AdvancedMarker position={location} />
+          {markers}
         </Map>
       </div>
     </>
