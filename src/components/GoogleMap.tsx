@@ -13,7 +13,23 @@ type Props = {
 export default function GoogleMap({search, setMapReady, mapReady, searchOrigin, superMarketMarkers}: Props) {
   const [location, setLocation] = useState<{ lat: number, lng: number } | null>(null)
 
-  const map = useMap();
+  async function initMap() {
+    const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary
+  }
+  
+  return (
+    <>
+      <div className="flex h-80">
+        <Map className="h-full w-full" defaultCenter={location} defaultZoom={10} mapId={process.env.NEXT_PUBLIC_MAP_ID as string}>
+          <AdvancedMarker position={location} />
+      </div>
+    </>
+  );
+}
+
+/* 
+const map = useMap();
   const markers: any[] = []
   
   useEffect(() => {
@@ -64,14 +80,4 @@ export default function GoogleMap({search, setMapReady, mapReady, searchOrigin, 
     return <div>Loading...</div>;
   }
 
-  return (
-    <>
-      <div className="flex h-80">
-        <Map className="h-full w-full" defaultCenter={location} defaultZoom={10} mapId={process.env.NEXT_PUBLIC_MAP_ID as string}>
-          <AdvancedMarker position={location} />
-          {markers}
-        </Map>
-      </div>
-    </>
-  );
-}
+*/
