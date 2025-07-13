@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
-import { AdvancedMarker, APIProvider, Map, useMap } from "@vis.gl/react-google-maps";
+import { useEffect, useState, useRef } from "react";
+import { AdvancedMarker, APIProvider} from "@vis.gl/react-google-maps";
 
 type Props = {
   search: string
@@ -12,13 +12,43 @@ type Props = {
 
 export default function GoogleMap({search, setMapReady, mapReady, searchOrigin, superMarketMarkers}: Props) {
   const [location, setLocation] = useState<{ lat: number, lng: number } | null>(null)
+  const mapRef = useRef<HTMLDivElement>(null);
 
   async function initMap() {
+    if (!mapRef.current) {
+      console.error("Map reference is not set.");
+      return;
+    }
     const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary
+    // useRef for map element
+    const map = new Map(mapRef.current , {
+      center: location,
+      zoom: 10,
+      mapId: process.env.NEXT_PUBLIC_MAP_ID as string,
+    });
+
+    const marker = new AdvancedMarkerElement({
+      position: location,
+      map: map,
+      title: "Center of seearch"
+    });
+
   }
+
+  initMap();
   
   return (
+    <>
+      <div className="flex h-80">
+        
+      </div>
+    </>
+  );
+}
+
+/* 
+return (
     <>
       <div className="flex h-80">
         <Map className="h-full w-full" defaultCenter={location} defaultZoom={10} mapId={process.env.NEXT_PUBLIC_MAP_ID as string}>
@@ -26,7 +56,7 @@ export default function GoogleMap({search, setMapReady, mapReady, searchOrigin, 
       </div>
     </>
   );
-}
+*/
 
 /* 
 const map = useMap();
