@@ -9,7 +9,7 @@ type Props = {
   setSuperMarketMarkers: (markers: any[]) => void
 }
 
-export default async function SupermarketList({ searchOrigin, range, superMarketMarkers, setSuperMarketMarkers }: Props) {
+export default function SupermarketList({ searchOrigin, range, superMarketMarkers, setSuperMarketMarkers }: Props) {
   
   const handleSearch = async () => { 
     // Implement search logic here

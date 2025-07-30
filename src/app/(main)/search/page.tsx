@@ -17,7 +17,8 @@ export default function Search() {
     lat: number;
     lng: number;
   } | null>(null);
-  const [superMarketMarkers, setSuperMarketMarkers] = useState<any[]>([]);
+  const [searchRadius, setSearchRadius] = useState(2);
+  const [superMarkets, setSuperMarkets] = useState<any[]>([]);
   return (
     <>
       <h1>Search</h1>
@@ -25,19 +26,20 @@ export default function Search() {
         apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string}
         libraries={["places"]}
       >
-        <h1>{process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}</h1>
         {mapReady && <PlacesAutocomplete setSearchOrigin={setSearchOrigin} />}
         <div className="flex w-1/4 flex-col">
           <SearchInput search={search} setSearch={setSearch} />
           <GoogleMap
             mapReady={mapReady}
-            superMarketMarkers={superMarketMarkers}
+            superMarkets={superMarkets}
             setMapReady={setMapReady}
             search={search}
             searchOrigin={searchOrigin}
+            setSearchOrigin={setSearchOrigin}
+            searchRadius={searchRadius}
           />
         </div>
-        <SupermarketList searchOrigin={searchOrigin} range={2} superMarketMarkers={ superMarketMarkers} setSuperMarketMarkers={setSuperMarketMarkers} />
+        <SupermarketList searchOrigin={searchOrigin} range={2} superMarkets={ superMarkets} setSuperMarkets={setSuperMarkets} />
       </APIProvider>
     </>
   );
