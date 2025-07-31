@@ -22,7 +22,10 @@ export default function GoogleMap({
   setSearchOrigin,
 }: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapAdvancedMarkersRef = useRef <google.maps.marker.AdvancedMarkerElement[]>([]);
+  const googleMapRef = useRef<google.maps.Map | null>(null);
+  const mapAdvancedMarkersRef = useRef<
+    google.maps.marker.AdvancedMarkerElement[]
+  >([]);
   // TODO: Ask about ref and how it works especially with dom manipulation and how they work with elements that are not rendered yet
 
   useEffect(() => {
@@ -53,22 +56,35 @@ export default function GoogleMap({
       return;
     }
     // At this point we're ready to initialize the map
-    initMap()
-  }, [mapRef, searchOrigin]);
-
+    initMap();
+  }, [searchOrigin]);
+  // TODO: Find out why useEffect does not accept async functions also ask if you can have async functions in regular functions
+  // This is to update the markers when the user searches for supermarkets and it adds them to the map
   useEffect(() => {
-    mapAdvancedMarkersRef.current.forEach((marker) => {
-      marker.map = null; // Clear previous markers
-    })
-    superMarkets.forEach((superMarket) => {
-      const marker = new AdvancedMarker({
-        position: superMarket.position,
-        title: superMarket.title,
-        map: mapRef.current ? mapRef.current.map : undefined,
+    // Probably won't need this but good to have in case if future changes
+    // TODO: Use variable that checks if the map is ready and have search bar use that
+    if (!mapRef.current || !googleMapRef.current) {
+      console.log("Map ref is not set yet");
+      return;
+    }
+    const setUpMarkers = async () => {
+      mapAdvancedMarkersRef.current.forEach((marker) => {
+        marker.map = null; // Clear previous markers
       });
-      mapAdvancedMarkersRef.current.push(marker);
-    })
-  }, [superMarkets])
+      const { AdvancedMarkerElement } = (await google.maps.importLibrary(
+        "marker",
+      )) as google.maps.MarkerLibrary;
+      superMarkets.forEach((superMarket) => {
+        const marker = new AdvancedMarkerElement({
+          position: superMarket.position,
+          title: superMarket.title,
+          map: googleMapRef.current,
+        });
+        mapAdvancedMarkersRef.current.push(marker);
+      });
+    };
+    setUpMarkers();
+  }, [superMarkets]);
 
   // This is to initialize the map when the search origin is set
   async function initMap() {
@@ -84,7 +100,7 @@ export default function GoogleMap({
       "marker",
     )) as google.maps.MarkerLibrary;
     // useRef for map element
-    const map = new Map(mapRef.current, {
+    googleMapRef.current = new Map(mapRef.current, {
       center: searchOrigin,
       zoom: 10,
       mapId: process.env.NEXT_PUBLIC_MAP_ID as string,
@@ -92,7 +108,7 @@ export default function GoogleMap({
 
     const marker = new AdvancedMarkerElement({
       position: searchOrigin,
-      map: map,
+      map: googleMapRef.current,
       title: "Center of search",
     });
   }

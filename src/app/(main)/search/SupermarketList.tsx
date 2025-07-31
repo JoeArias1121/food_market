@@ -5,11 +5,11 @@ import { Button } from '@/components/ui/button'
 type Props = {
   searchOrigin: { lat: number; lng: number } | null
   range: number
-  superMarketMarkers: any[]
-  setSuperMarketMarkers: (markers: any[]) => void
+  superMarkets: any[]
+  setSuperMarkets: (superMarkets: any[]) => void
 }
 
-export default function SupermarketList({ searchOrigin, range, superMarketMarkers, setSuperMarketMarkers }: Props) {
+export default function SupermarketList({ searchOrigin, range, superMarkets, setSuperMarkets }: Props) {
   
   const handleSearch = async () => { 
     // Implement search logic here
@@ -50,8 +50,8 @@ export default function SupermarketList({ searchOrigin, range, superMarketMarker
         // Loop through and get all the results.
         // TODO: Migrate to new map api to show map
         places.forEach((place) => {
-          setSuperMarketMarkers([
-            ...superMarketMarkers,
+          setSuperMarkets([
+            ...superMarkets,
             {
               displayName: place.displayName,
               position: place.location,
