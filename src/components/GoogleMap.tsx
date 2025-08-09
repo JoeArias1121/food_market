@@ -21,13 +21,14 @@ export default function GoogleMap({
   searchRadius,
   setSearchOrigin,
 }: Props) {
+
   const mapRef = useRef<HTMLDivElement>(null);
   const googleMapRef = useRef<google.maps.Map | null>(null);
   const mapAdvancedMarkersRef = useRef<
     google.maps.marker.AdvancedMarkerElement[]
   >([]);
   // TODO: Ask about ref and how it works especially with dom manipulation and how they work with elements that are not rendered yet
-
+  // gets the current location of the user on FIRST load 
   useEffect(() => {
     // Get the current location
     if (navigator.geolocation) {
@@ -46,7 +47,8 @@ export default function GoogleMap({
       console.error("Geolocation is not supported by this browser.");
     }
   }, []);
-  // This sees if the map is ready and initializes it
+  // This sees if the mapRef is ready and initializes the google map into the mapRef div
+  // after map is initialized it sets the mapReady state to true
   useEffect(() => {
     if (!mapRef.current) {
       console.log("Map ref is not set yet");
@@ -57,20 +59,21 @@ export default function GoogleMap({
     }
     // At this point we're ready to initialize the map
     initMap();
+    setMapReady(true);
   }, [searchOrigin]);
   // TODO: Find out why useEffect does not accept async functions also ask if you can have async functions in regular functions
   // This is to update the markers when the user searches for supermarkets and it adds them to the map
   useEffect(() => {
-    // Probably won't need this but good to have in case if future changes
-    // TODO: Use variable that checks if the map is ready and have search bar use that
+    // Probably won't need this but good to have in case of future changes
     if (!mapRef.current || !googleMapRef.current) {
       console.log("Map ref is not set yet");
       return;
     }
     const setUpMarkers = async () => {
       mapAdvancedMarkersRef.current.forEach((marker) => {
-        marker.map = null; // Clear previous markers
+        marker.map = null; // decouples the marker from the map so it does not appear on the map anymore
       });
+      mapAdvancedMarkersRef.current = []; // clears the markers array to avoid duplicates and save memory
       const { AdvancedMarkerElement } = (await google.maps.importLibrary(
         "marker",
       )) as google.maps.MarkerLibrary;
